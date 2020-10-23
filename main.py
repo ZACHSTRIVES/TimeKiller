@@ -8,6 +8,7 @@ actions = True
 class TimeKiller:
     def __init__(self):
         self.__is_actions = True
+        self.__threads = []
 
     def timer_thread(self):
         while True:
@@ -18,12 +19,15 @@ class TimeKiller:
                 print("执行：timer——thread")
 
     def on_click(self, x, y, button, pressed):  # 鼠标点击监听器
+        print(x,y)
         self.__is_actions = True
 
     def on_move(self, x, y):  # 鼠标移动监听器
+        print(x, y)
         self.__is_actions = True
 
     def on_press(self, key):  # 键盘输入监听器
+        print(key)
         self.__is_actions = True
 
     def action_listener_thread(self):
@@ -34,11 +38,12 @@ class TimeKiller:
                 listener.join()
 
     def start(self):
-        threads = [threading.Thread(target=TimeKiller.action_listener_thread, args=(self,)),
+        self.__threads = [threading.Thread(target=TimeKiller.action_listener_thread, args=(self,)),
                    threading.Thread(target=TimeKiller.timer_thread, args=(self,))]
-        for i in threads:
+        for i in self.__threads:
             i.start()
+    def end(self):
+        if len(self.__threads)!=0:
+            for i in self.__threads:
+                i.join()
 
-
-tk = TimeKiller()
-tk.start()
